@@ -30,7 +30,7 @@ function requireLogin(req, res, next) {
 // --- API：登入 ---
 app.post("/api/login", (req, res) => {
     const { password } = req.body;
-    const correct = process.env.ADMIN_PASS;
+    const correct = process.env.ADMIN_PASSWORD;
 
     if (password === correct) {
         req.session.loggedIn = true;
