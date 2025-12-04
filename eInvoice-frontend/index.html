@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+
+<body>
+    <h1>登入</h1>
+
+    <input id="pw" type="password" placeholder="請輸入密碼">
+    <button onclick="login()">登入</button>
+
+    <p id="msg"></p>
+
+    <script>
+        async function login() {
+            const password = document.getElementById("pw").value;
+
+            const res = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    password
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.ok) {
+                window.location.href = "/index.html";
+            } else {
+                document.getElementById("msg").innerText = "密碼錯誤";
+            }
+        }
+    </script>
+</body>
+
+</html>

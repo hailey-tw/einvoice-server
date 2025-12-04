@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>QR Scanner</title>
+
+    <script src="https://unpkg.com/qr-scanner@1.4.2/qr-scanner.umd.min.js"></script>
+
+    <style>
+        video {
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        #log {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>QR Scanner</h2>
+
+    <video id="video" playsinline></video>
+
+    <button id="pauseBtn">Pause</button>
+    <button onclick="showSaved()">顯示已儲存掃描記錄</button>
+
+    <div id="log"></div>
+
+    <script>
+        const video = document.getElementById("video");
+        const logEl = document.getElementById("log");
+        const pauseBtn = document.getElementById("pauseBtn");
+
+        let paused = false;
+        let scanner = null;
+
+        // 初始化 sessionStorage
+        if (!sessionStorage.qrLogs) sessionStorage.qrLogs = JSON.stringify([]);
+
+        function addQR(result) {
+            let arr = JSON.parse(sessionStorage.qrLogs);
+            arr.push({
+                data: result,
+                time: new Date().toLocaleString()
+            });
+            sessionStorage.qrLogs = JSON.stringify(arr);
+
+            log("掃描儲存：" + result);
+        }
+
+        function log(msg) {
+            const p = document.createElement("div");
+            p.textContent = msg;
+            logEl.prepend(p);
+        }
+
+        function showSaved() {
+            let arr = JSON.parse(sessionStorage.qrLogs);
+            log("---- 已儲存記錄 ----");
+            arr.forEach(item => log(item.time + " / " + item.data));
+        }
+
+        // 啟動掃描器
+        scanner = new QrScanner(video, result => {
+            if (paused) return;
+            addQR(result);
+        }, {
+            highlightScanRegion: true,
+            highlightCodeOutline: true
+        });
+
+        scanner.start();
+
+        // Pause的切換
+        pauseBtn.onclick = () => {
+            paused = !paused;
+            pauseBtn.textContent = paused ? "Resume" : "Pause";
+        };
+    </script>
+</body>
+
+</html>
