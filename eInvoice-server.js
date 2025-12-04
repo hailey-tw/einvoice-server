@@ -17,9 +17,9 @@ app.use(session({
     saveUninitialized: false,
     cookie: { maxAge: 2 * 60 * 60 * 1000 } // 2 hours
 }));
-
-// 靜態檔案 但此專案目前沒有
-// app.use(express.static(path.join(__dirname, "public")));
+console.log('static dir:', path.join(__dirname, "eInvoice-frontend"))
+    // 靜態檔案, 前端位置
+app.use(express.static(path.join(__dirname, "eInvoice-frontend")));
 
 // --- Middleware：檢查是否登入 ---
 function requireLogin(req, res, next) {
@@ -40,16 +40,20 @@ app.post("/api/login", (req, res) => {
     res.status(403).json({ ok: false, error: "Wrong password" });
 });
 
-// --- API：登出 ---
-app.post("/api/logout", (req, res) => {
-    req.session.destroy(() => {
-        res.json({ ok: true });
-    });
-});
+// // --- API：登出 ---
+// app.post("/api/logout", (req, res) => {
+//     req.session.destroy(() => {
+//         res.json({ ok: true });
+//     });
+// });
 
 // API：僅登入者可使用
 app.get("/api/status", requireLogin, (req, res) => {
-    res.json({ loggedIn: true });
+    if (req.session.loggedIn) {
+        res.json({ loggedIn: true });
+    } else {
+        res.json({ loggedIn: false });
+    }
 });
 
 // 啟動 Server

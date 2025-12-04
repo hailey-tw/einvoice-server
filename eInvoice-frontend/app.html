@@ -37,6 +37,23 @@
         let paused = false;
         let scanner = null;
 
+        const API = "http://localhost:3000" // 後端網址
+
+        // 檢查登入狀態，未登入則跳至登入頁面
+        async function checkLogin() {
+            try {
+                const res = await fetch('/api/status');
+                const data = await res.json();
+
+                if (!data.loggedIn) {
+                    alert("尚未登入");
+                    window.location.herf = "/index.html";
+                }
+            } catch (err) {
+                console.error("檢查登入狀態失敗", err)
+            }
+        }
+
         // 初始化 sessionStorage
         if (!sessionStorage.qrLogs) sessionStorage.qrLogs = JSON.stringify([]);
 

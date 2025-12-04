@@ -28,10 +28,11 @@
                 })
             });
 
+            // 成功會收到: res.json({ ok: true })
             const data = await res.json();
 
             if (data.ok) {
-                window.location.href = "/index.html";
+                window.location.href = "/app.html";
             } else {
                 document.getElementById("msg").innerText = "密碼錯誤";
             }
